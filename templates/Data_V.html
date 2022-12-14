@@ -1,0 +1,220 @@
+{% extends 'base.html'%}
+{% block content %}
+
+<div class="container">
+<br><br>
+<form method="POST">
+  {% csrf_token %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <label>Choose File: </label><br>
+      <Select class="form-control" name="file_name" id="file_name" required>
+        <option value="default" disabled selected hidden>Choose Option </option>
+        {% for items in myquery %}
+        <option value="{{items.description}}"> {{items.description}} </option>
+        {% endfor %}
+        
+    </Select>
+    </div>
+
+    <div class="col">
+      <label>Choose column: </label><br>
+      <select class="form-control" name="Column" id="Column" required>
+        <option value="Default" disabled selected hidden>Choose Option </option>
+        <option value="Col1"> Column1 </option>
+        <option value="Col2"> Column2 </option>
+       
+        
+      </select>
+    </div>
+
+    <div class="col">
+      <label>Choose operation: </label><br>
+      <Select class="form-control" name="operation" id="operation" required>
+        <option value="Default" disabled selected hidden>Choose Option </option>
+        <option value="Max"> Max </option>
+        <option value="Min"> Min </option>
+        <option value="Sum"> Sum </option>
+      </Select>
+    </div>
+
+    <div class="col">
+      <br>
+      <button type='Submit' value='Submit' id="btnsave" class="btn btn-success">Compute</button>
+    </div>
+    <div class="col">
+      <label>Output: </label><br>
+      <input type='text' id='ans'></input>
+    </div>
+  </div>
+</div>
+
+</form>
+
+
+<form method="POST">
+  <br><br>
+  {% csrf_token %}
+  <div class="container">
+    <div class="row">
+
+      <div class="col">
+        <label>Choose File: </label><br>
+        <Select class="form-control" name="file_name1" id="file_name1" required>
+          <option value="default" disabled selected hidden>Choose Option </option>
+          {% for items in myquery %}
+          <option value="{{items.description}}"> {{items.description}} </option>
+          {% endfor %}
+          
+      </Select>
+      </div>
+
+      <div class="col">
+        <label>Choose column: </label><br>
+        <select class="form-control" name="Column1" id="Column1" required>
+          <option value="Default" disabled selected hidden>Choose Option </option>
+          <option value="Col1"> Column1 </option>
+          <option value="Col2"> Column2 </option>
+         
+          
+        </select>
+      </div>
+
+      <div class="col">
+        <label>Choose column: </label><br>
+        <select class="form-control" name="Column2" id="Column2" required>
+          <option value="Default" disabled selected hidden>Choose Option </option>
+          <option value="Col1"> Column1 </option>
+          <option value="Col2"> Column2 </option>
+         
+          
+        </select>
+      </div>
+
+      <div class="col">
+        <br>
+        <button type='Submit' value='Submit' id="Plot" class="btn btn-success">Compute</button>
+      </div>
+
+      <div class="col">
+        
+      </div>
+      
+
+    </div>
+  </div>
+</form>
+
+<div id="myPlot" style="width:100%;max-width:700px"></div>
+
+
+
+</div>
+<script>
+  $("#Plot").click(function (e){
+    e.preventDefault();
+    
+    // console.log("On clickkkkkk")
+    let file_name = $("#file_name1").val();
+    let Column1 = $("#Column1").val();
+    let Column2 = $("#Column2").val();
+    
+    console.log(Column1)
+    console.log(Column2)
+
+    if (file_name== null && Column== null && Column2== null ) {
+      console.log("Please Enter the data")
+    }
+    else{
+      valuedict= {file:file_name, col1:Column1, col2:Column2 };
+      $.ajax({
+        type:'POST',
+        url: loadUrl2,
+        data:{
+          'valuedict': JSON.stringify(valuedict),
+          'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+          
+          },
+        success:function(response){
+          console.log("successfully") 
+          var Jdata = JSON.parse(response['json_data1'])
+          console.log(Jdata['list1'],'=========Jdata',typeof(Jdata),Jdata['list2'])
+
+
+          var xArray = Jdata['list1'];
+          var yArray = Jdata['list2'];
+
+          // Define Data
+          var data = [{
+            x:xArray,
+            y:yArray,
+            mode:"markers"
+          }];
+
+          // Define Layout
+          var layout = {
+            xaxis: {range: [40, 160], title: "Square Meters"},
+            yaxis: {range: [5, 16], title: "Price in Millions"},  
+            title: "House Prices vs. Size"
+          };
+
+          // Display using Plotly
+          Plotly.newPlot("myPlot", data, layout);
+
+
+
+
+        },
+      })
+    } 
+
+  })
+
+</script>
+
+
+
+<script>
+  $("#btnsave").click(function (e){
+    e.preventDefault();
+    
+    // console.log("On clickkkkkk")
+    let file_name = $("#file_name").val();
+    let Column = $("#Column").val();
+    let operation = $("#operation").val();
+    // console.log(file_name)
+    // console.log(Column)<div class="col">
+   
+    // console.log(operation)
+
+    if (file_name== null && Column== null && operation== null ) {
+      console.log("Please Enter the data")
+    }
+    else{
+      valuedict= {file:file_name, col:Column, op:operation };
+      $.ajax({
+        type:'POST',
+        url: loadUrl,
+        data:{
+          'valuedict': JSON.stringify(valuedict),
+          'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+          
+          },
+        success:function(response){
+          console.log("successfully")
+          var Jdata = response['json_data']
+          console.log(Jdata,'=========Jdata',typeof(Jdata))
+          document.getElementById('ans').value = Jdata
+        },
+      })
+    }
+
+  })
+
+</script>
+
+
+
+
+{% endblock %}

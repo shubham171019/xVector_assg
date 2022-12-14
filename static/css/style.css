@@ -1,0 +1,13 @@
+.form-group{
+    position:relative;
+    float: left;
+    }
+.text-error{
+    position:absolute;
+    right:0;
+    top:0px;
+    background:#ED4F32;
+    color:white;
+    border-radius:5px;
+    padding:5px 3px;
+    }

@@ -1,0 +1,53 @@
+{% extends 'base.html'%}
+{% block content %}
+
+
+<div class="container">
+<div class="row">
+<div class="col-md-12" style="background-color: #e8eae5; padding:10px; box-sizing: border-box; border-radius: 10px; margin-bottom:10px">
+  
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+  </form>
+</div>
+</div>
+</div>
+
+
+<div class="container">
+<div class="row">
+<div class="col-md-12" style="background-color: #e8eae5; padding:10px; box-sizing: border-box; border-radius: 10px; margin-bottom:10px">
+<div class="table-responsive">
+    <table class="table table-bordered" id="newdatatable"  >
+
+        <thead>
+            <tr>
+            
+              <th>File Name</th>
+              <th>uploaded_at</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {%for filename in myquery %}
+
+            <tr>
+                <td>{{filename.description}} </td>
+                <td>{{filename.uploaded_at}} </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+</div>
+</div>
+</div>
+ 
+
+{% endblock %}
