@@ -60,7 +60,7 @@ def save_data(request):
         json_data = json.dumps(str(df))
         file.close()
         return JsonResponse({'json_data':json_data},safe=False)
-import ast 
+
 def plot_data(request):
     mydata = request.POST.get("valuedict")
     mydict = json.loads(mydata)
